@@ -41,7 +41,7 @@
     # ── CRITICAL: Set your real Gemini API key here ──────────────
     # Better practice: store in group_vars/all.yml under ansible-vault
     # or pass via environment: -e "gemini_api_key=$GEMINI_KEY"
-    gemini_api_key: "AIzaSyCfCA_GU0yWAkyG3m6t8UjrRjkfoXtPtjc"
+    gemini_api_key: "API Key"
 
     # The Gemini model to use. gemini-2.0-flash is fast and free-tier friendly.
     gemini_model: "gemini-2.0-flash"

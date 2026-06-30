@@ -1,0 +1,7 @@
+---
+# tasks file for cisco_base
+
+- name: Apply Base Configuration via Jinja2 Template
+  cisco.ios.ios_config:
+    src: base_config.j2
+    save_when: modified

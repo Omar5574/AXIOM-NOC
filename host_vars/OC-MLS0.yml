@@ -1,0 +1,173 @@
+---
+# إعدادات الجهاز الأساسية
+device_hostname: OC-MLS0
+
+
+interfaces:
+  # --- إعدادات الربط ---
+  - name: range Ethernet0/0 - 3
+    cmds:
+      - channel-group 1 mode active
+
+  - name: Port-channel 1
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: range Ethernet2/0 - 2
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+
+  - name: Ethernet1/0
+    cmds:
+      - no switchport
+      - ip address 10.3.255.2 255.255.255.252
+      - no shutdown
+
+# SVIs CFG & HSRP 
+  # Reception
+  - name: Vlan 10
+    cmds:
+      - ip address 10.3.10.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN10 in
+      - standby 10 ip 10.3.10.254
+      - standby 10 priority 110
+      - standby 10 preempt
+      - no shutdown
+  # CCTV
+  - name: Vlan 20
+    cmds:
+      - ip address 10.3.20.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN20 in
+      - standby 20 ip 10.3.20.254
+      - standby 20 priority 110
+      - standby 20 preempt
+      - no shutdown
+  # Labs
+  - name: Vlan 30
+    cmds:
+      - ip address 10.3.30.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN30 in
+      - standby 30 ip 10.3.30.254
+      - standby 30 priority 110
+      - standby 30 preempt
+      - no shutdown
+  # Imaging & XRAY
+  - name: Vlan 40
+    cmds:
+      - ip address 10.3.40.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN40 in
+      - standby 40 ip 10.3.40.254
+      - standby 40 priority 110
+      - standby 40 preempt
+      - no shutdown
+  # Pharmacy 
+  - name: Vlan 60
+    cmds:
+      - ip address 10.3.60.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN60 in
+      - standby 60 ip 10.3.60.254
+      - standby 60 priority 110
+      - standby 60 preempt
+      - no shutdown
+  # Nursing & Doctors
+  - name: Vlan 70
+    cmds:
+      - ip address 10.3.64.2 255.255.248.0
+      - ip access-group ISOLATE_VLAN70 in
+      - standby 70 ip 10.3.71.254
+      - standby 70 priority 110
+      - standby 70 preempt
+      - no shutdown
+  # IT 
+  - name: Vlan 80
+    cmds:
+      - ip address 10.3.80.2 255.255.255.0
+      # - ip access-group ISOLATE_VLAN80 in
+      - standby 80 ip 10.3.80.254
+      - standby 80 priority 110
+      - standby 80 preempt
+      - no shutdown
+
+  # GUESTS
+  - name: Vlan 90
+    cmds:
+      - ip address 10.3.88.2 255.255.248.0
+      - ip access-group ISOLATE_VLAN90 in
+      - standby 90 ip 10.3.95.254
+      - standby 90 priority 110
+      - standby 90 preempt
+      - no shutdown
+  # Ambulance 
+  - name: Vlan 100
+    cmds:
+      - ip address 10.3.100.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN100 in
+      - standby 100 ip 10.3.100.254
+      - standby 100 priority 110
+      - standby 100 preempt
+      - no shutdown
+  # Oncology ICU 
+  - name: Vlan 310
+    cmds:
+      - ip address 10.3.31.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 310 ip 10.3.31.254
+      - standby 310 priority 110
+      - standby 310 preempt
+      - no shutdown
+  # Oncology  Clinics
+  - name: Vlan 320
+    cmds:
+      - ip address 10.3.32.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 320 ip 10.3.32.254
+      - standby 320 priority 110
+      - standby 320 preempt
+      - no shutdown
+  # Chemo unit
+  - name: Vlan 330
+    cmds:
+      - ip address 10.3.33.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 330 ip 10.3.33.254
+      - standby 330 priority 110
+      - standby 330 preempt
+      - no shutdown
+  # oncology 
+  - name: Vlan 370
+    cmds:
+      - ip address 10.3.37.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 370 ip 10.3.37.254
+      - standby 370 priority 110
+      - standby 370 preempt
+      - no shutdown
+  # Patients 
+  - name: Vlan 610
+    cmds:
+      - ip address 10.3.61.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN610 in
+      - standby version 2
+      - standby 610 ip 10.3.61.254
+      - standby 610 priority 110
+      - standby 610 preempt
+      - no shutdown
+
+  # Staff_BYOD 
+  - name: Vlan 888
+    cmds:
+      - ip address 10.6.32.2 255.255.240.0
+      - ip access-group ISOLATE_VLAN888 in
+      - standby version 2
+      - standby 888 ip 10.6.47.254
+      - standby 888 priority 110
+      - standby 888 preempt
+      - no shutdown
+

@@ -1,0 +1,128 @@
+---
+device_hostname: ET-MLS1
+
+interfaces:
+  - name: range Ethernet0/0 - 3
+    cmds:
+      - channel-group 1 mode active
+
+  - name: Port-channel 1
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: range Ethernet2/0 - 2
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: Ethernet1/1
+    cmds:
+      - no switchport
+      - ip address 10.4.255.6 255.255.255.252
+      - no shutdown
+
+  # --- SVIs & HSRP ---
+  - name: Vlan 10
+    cmds:
+      - ip address 10.4.10.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN10 in
+      - standby 10 ip 10.4.10.254
+      - no shutdown
+
+  - name: Vlan 20
+    cmds:
+      - ip address 10.4.20.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN20 in
+      - standby 20 ip 10.4.20.254
+      - no shutdown
+
+  - name: Vlan 30
+    cmds:
+      - ip address 10.4.30.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN30 in
+      - standby 30 ip 10.4.30.254
+      - no shutdown
+
+  - name: Vlan 40
+    cmds:
+      - ip address 10.4.40.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN40 in
+      - standby 40 ip 10.4.40.254
+      - no shutdown
+
+  - name: Vlan 60
+    cmds:
+      - ip address 10.4.60.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN60 in
+      - standby 60 ip 10.4.60.254
+      - no shutdown
+
+  - name: Vlan 70
+    cmds:
+      - ip address 10.4.64.3 255.255.248.0
+      - ip access-group ISOLATE_VLAN70 in
+      - standby 70 ip 10.4.71.254
+      - no shutdown
+
+  - name: Vlan 80
+    cmds:
+      - ip address 10.4.80.3 255.255.255.0
+      # - ip access-group ISOLATE_VLAN80 in
+      - standby 80 ip 10.4.80.254
+      - no shutdown
+
+  - name: Vlan 90
+    cmds:
+      - ip address 10.4.88.3 255.255.248.0
+      - ip access-group ISOLATE_VLAN90 in
+      - standby 90 ip 10.4.95.254
+      - no shutdown
+
+  - name: Vlan 100
+    cmds:
+      - ip address 10.4.100.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN100 in
+      - standby 100 ip 10.4.100.254
+      - no shutdown
+
+  # VLANs > 255 (Requires HSRP Version 2)
+  - name: Vlan 410
+    cmds:
+      - ip address 10.4.41.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 410 ip 10.4.41.254
+      - no shutdown
+
+  - name: Vlan 420
+    cmds:
+      - ip address 10.4.42.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 420 ip 10.4.42.254
+      - no shutdown
+
+  - name: Vlan 470
+    cmds:
+      - ip address 10.4.47.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 470 ip 10.4.47.254
+      - no shutdown
+
+  - name: Vlan 610
+    cmds:
+      - ip address 10.4.61.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN610 in
+      - standby version 2
+      - standby 610 ip 10.4.61.254
+      - no shutdown
+  
+  - name: Vlan 888
+    cmds:
+      - ip address 10.6.48.3 255.255.240.0
+      - ip access-group ISOLATE_VLAN888 in
+      - standby version 2
+      - standby 888 ip 10.6.63.254
+      - no shutdown

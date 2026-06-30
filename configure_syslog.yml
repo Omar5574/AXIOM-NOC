@@ -1,0 +1,127 @@
+---
+# ============================================================
+# NextGen NMS — Phase 10: Real-Time Syslog Configuration
+# Playbook: configure_syslog.yml
+#
+# Purpose:
+#   Pushes syslog streaming configuration to ALL Cisco devices
+#   in the hospital network so they stream live log events to
+#   the backend server's UDP port 514 listener.
+#
+# Run command:
+#   ansible-playbook configure_syslog.yml
+#
+# To target only one building:
+#   ansible-playbook configure_syslog.yml --limit oncology_core
+#
+# What this does on each device:
+#   1. Points "logging host" at your Ansible/backend server IP
+#   2. Sets severity to "debugging" (captures ALL severity levels)
+#   3. Enables timestamps so each log line has a precise time
+#   4. Enables sequence numbers to detect dropped messages
+#   5. Saves the config to NVRAM so it survives a reload
+# ============================================================
+
+- name: "Push Syslog Streaming Config to All Cisco Devices"
+  hosts: cisco_devices
+  gather_facts: false
+
+  vars:
+    # ── CRITICAL: Change this to your Ansible/backend server IP ──
+    # This is the IP that all Cisco devices will SEND their logs to.
+    # It must be the IP of the machine running server.js.
+    # Example: if your Ansible server is at 10.3.80.1, set that.
+    syslog_server_ip: "10.3.80.1"
+
+    # The UDP port your backend is listening on.
+    # Port 514 is the standard. If you can't run node as root, use 1514.
+    syslog_port: 514
+
+    # Severity level. "debugging" (level 7) captures everything.
+    # For production, use "informational" (level 6) to reduce noise.
+    syslog_trap_level: "debugging"
+
+    # Syslog source interface — ensures Cisco uses the management IP
+    # as the source, so IP_TO_HOSTNAME in server.js resolves correctly.
+    # Comment out if your devices don't have a dedicated mgmt interface.
+    # syslog_source_interface: "GigabitEthernet0/0"
+
+  tasks:
+
+    # ── Task 1: Configure the syslog server destination ──────────
+    # "logging host" tells the router WHERE to send its logs.
+    # "transport udp port 514" explicitly uses UDP (default anyway,
+    # but being explicit makes the config self-documenting).
+    - name: "Set syslog destination host"
+      cisco.ios.ios_config:
+        lines:
+          - "logging host {{ syslog_server_ip }} transport udp port {{ syslog_port }}"
+
+    # ── Task 2: Set the severity threshold ───────────────────────
+    # "logging trap debugging" means: send logs at severity 7
+    # (debug) and HIGHER priority (i.e., all severity levels).
+    # This is what makes port-down events, OSPF flaps, and auth
+    # failures all visible in your SIEM dashboard.
+    - name: "Set syslog trap level to {{ syslog_trap_level }}"
+      cisco.ios.ios_config:
+        lines:
+          - "logging trap {{ syslog_trap_level }}"
+
+    # ── Task 3: Enable syslog on the device globally ─────────────
+    # Some IOS versions need this explicitly enabled.
+    - name: "Enable syslog globally"
+      cisco.ios.ios_config:
+        lines:
+          - "logging on"
+
+    # ── Task 4: Enable timestamps on log messages ─────────────────
+    # Without this, logs arrive without a time — useless for forensics.
+    # "datetime msec" gives millisecond precision: "Apr 25 14:30:22.543"
+    - name: "Enable timestamps on syslog messages"
+      cisco.ios.ios_config:
+        lines:
+          - "service timestamps log datetime msec localtime show-timezone"
+
+    # ── Task 5: Enable sequence numbers ──────────────────────────
+    # Adds a sequential counter to each log line. If you see a gap
+    # (e.g., 1001, 1002, 1005) you know messages 1003-1004 were lost.
+    - name: "Enable syslog sequence numbers"
+      cisco.ios.ios_config:
+        lines:
+          - "service sequence-numbers"
+
+    # ── Task 6: Set logging buffer size ──────────────────────────
+    # Internal buffer stores logs locally on the device.
+    # Useful to run "show logging" via Ansible and pull history.
+    - name: "Set local logging buffer to 16KB"
+      cisco.ios.ios_config:
+        lines:
+          - "logging buffered 16384 debugging"
+
+    # ── Task 7: Suppress console logging ─────────────────────────
+    # Console logging floods the serial line and can make the device
+    # unresponsive. Now that we have remote syslog, disable console spam.
+    - name: "Suppress console logging (use syslog instead)"
+      cisco.ios.ios_config:
+        lines:
+          - "no logging console"
+
+    # ── Task 8: Save config to NVRAM ─────────────────────────────
+    # Without this, a reload wipes all the syslog configuration.
+    - name: "Save running-config to startup-config"
+      cisco.ios.ios_command:
+        commands:
+          - "write memory"
+
+    # ── Task 9: Verify the configuration was applied ─────────────
+    # Pull "show logging" from the device and print it so you can
+    # visually confirm the server IP appears in the output.
+    - name: "Verify: show logging output"
+      cisco.ios.ios_command:
+        commands:
+          - "show logging | include Logging to"
+      register: logging_verify
+
+    - name: "Print verification result"
+      ansible.builtin.debug:
+        msg: "{{ inventory_hostname }}: {{ logging_verify.stdout[0] }}"

@@ -1,0 +1,17 @@
+---
+
+
+global_configs:
+  - service password-encryption      
+  - no ip domain-lookup          
+  - "banner motd ^C WARNING: Authorized Hospital Personnel Only!   ^C"
+
+  - ip domain-name mynextgenhospital.local 
+  - ip ssh version 2               
+  - ip ssh time-out 60               
+  - ip ssh authentication-retries 3 
+
+  - clock timezone EET 2
+  
+  - ip name-server 8.8.8.8
+  - ip name-server 1.1.1.1

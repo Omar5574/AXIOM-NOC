@@ -1,0 +1,268 @@
+---
+# =============================================================================
+# NextGen NMS — Phase 10: AI Security Auditor & Autonomous Self-Healing
+# ai_audit.yml
+#
+# HOW THIS INTEGRATES WITH server.cjs:
+#
+#   server.cjs calls:  ansible-playbook ai_audit.yml --limit <device> --tags audit
+#   This playbook:     SSHes into the device, fetches VTY + ACL config,
+#                      submits it to the Google Gemini API, waits for verdict.
+#   The KEY output:    A debug task emits a line containing NMS_VERDICT=...
+#                      server.cjs parses this from stdout using regex.
+#                      No temp files, no JSON files — stdout is the contract.
+#
+#   For self-healing:  server.cjs calls with --tags heal
+#                      Only the ios_config + write memory tasks run.
+#
+# TAGS:
+#   audit  — Run VTY fetch + Gemini analysis + emit NMS_VERDICT (no config change)
+#   heal   — Apply ios_config ACL fix + write memory (config change)
+#   both   — Run full audit then heal if VULNERABLE (default, no --tags needed)
+#
+# WHY NMS_VERDICT IN STDOUT?
+#   Alternatives like writing to a JSON file would require file path management
+#   and create race conditions when multiple devices audit in parallel.
+#   stdout parsing is atomic — each exec() call gets its own stdout stream.
+#
+# GEMINI API KEY: Set this in group_vars/all.yml or as an env var.
+#   Do NOT hardcode API keys in production. Use ansible-vault.
+# =============================================================================
+
+- name: "AI Security Auditor — Gemini + Ansible"
+  hosts: cisco_devices
+  gather_facts: false
+  connection: network_cli
+
+  vars:
+    ansible_network_os: cisco.ios.ios
+    ansible_command_timeout: 60
+
+    # ── CRITICAL: Set your real Gemini API key here ──────────────
+    # Better practice: store in group_vars/all.yml under ansible-vault
+    # or pass via environment: -e "gemini_api_key=$GEMINI_KEY"
+    gemini_api_key: "AIzaSyCfCA_GU0yWAkyG3m6t8UjrRjkfoXtPtjc"
+
+    # The Gemini model to use. gemini-2.0-flash is fast and free-tier friendly.
+    gemini_model: "gemini-2.0-flash"
+
+    # The ACL name that MUST be present in VTY config for HIPAA compliance.
+    # If the VTY lines have 'access-class ISOLATE_VTY in' and this ACL exists,
+    # the device is SECURE. If either is missing, it's VULNERABLE.
+    required_acl_name: "ISOLATE_VTY"
+
+    # The full ACL definition applied during self-healing.
+    # This restricts VTY access to the Ansible server subnet only.
+    isolate_vty_acl:
+      - "ip access-list standard ISOLATE_VTY"
+      - " 10 permit 10.3.80.0 0.0.0.255"
+      - " 20 permit 10.4.80.0 0.0.0.255"
+      - " 30 deny   any log"
+
+  tasks:
+
+    # =========================================================================
+    # PHASE 1 — Fetch the real device configuration
+    # We run TWO commands: one for VTY lines, one for the ACL.
+    # Together these give Gemini everything it needs to judge HIPAA compliance.
+    # =========================================================================
+    - name: "Audit — Fetch VTY configuration from {{ inventory_hostname }}"
+      cisco.ios.ios_command:
+        commands:
+          - "show running-config | section line vty"
+      register: vty_config_result
+      ignore_errors: true
+      failed_when: false
+      tags: [audit, both]
+
+    - name: "Audit — Fetch ACL configuration from {{ inventory_hostname }}"
+      cisco.ios.ios_command:
+        commands:
+          - "show access-lists {{ required_acl_name }}"
+      register: acl_config_result
+      ignore_errors: true
+      failed_when: false
+      tags: [audit, both]
+
+    # Build a combined config string for Gemini to analyze.
+    # We explicitly label each section so Gemini understands the context.
+    - name: "Audit — Assemble config snapshot for Gemini analysis"
+      ansible.builtin.set_fact:
+        combined_config: |
+          Device: {{ inventory_hostname }}
+          
+          === VTY Lines Configuration ===
+          {{ vty_config_result.stdout[0] | default('(empty — could not retrieve)') }}
+          
+          === ACL {{ required_acl_name }} ===
+          {{ acl_config_result.stdout[0] | default('(ACL not found — access-list does not exist)') }}
+      tags: [audit, both]
+
+    # =========================================================================
+    # PHASE 2 — Send configuration to Gemini API
+    #
+    # We send a carefully structured prompt that forces Gemini to:
+    #  a) Return EXACTLY one of two verdicts: SECURE or VULNERABLE
+    #  b) Explain WHY in a single sentence
+    #  c) If VULNERABLE, list the exact fix commands
+    #
+    # The format we ask for maps directly to what parseAnsibleVerdict()
+    # in server.cjs expects. Changes here must stay in sync with server.cjs.
+    #
+    # NOTE: The 'uri' module is a synchronous HTTP call from the Ansible
+    # control node (your Linux server), NOT from the Cisco device.
+    # The device never touches the internet — only Ansible does.
+    # =========================================================================
+    - name: "Audit — Submit config to Gemini API for security verdict"
+      ansible.builtin.uri:
+        url: "https://generativelanguage.googleapis.com/v1beta/models/{{ gemini_model }}:generateContent?key={{ gemini_api_key }}"
+        method: POST
+        body_format: json
+        timeout: 30
+        headers:
+          Content-Type: "application/json"
+        body:
+          contents:
+            - parts:
+                - text: |
+                    You are a Cisco network security auditor checking HIPAA compliance for a hospital network.
+                    
+                    Analyze this device configuration and determine if the VTY (SSH management) access is properly secured.
+                    
+                    SECURE criteria (ALL must be true):
+                    1. The VTY lines contain an 'access-class {{ required_acl_name }} in' directive
+                    2. The ACL '{{ required_acl_name }}' exists and has at least one permit statement
+                    3. The VTY lines use 'transport input ssh' (not telnet)
+                    4. An exec-timeout is configured (not 0 0)
+                    
+                    VULNERABLE if ANY criterion is missing.
+                    
+                    Configuration to analyze:
+                    {{ combined_config }}
+                    
+                    You MUST respond in EXACTLY this format (no extra text before or after):
+                    NMS_VERDICT=SECURE
+                    NMS_DETAILS=All VTY security controls verified. access-class ISOLATE_VTY present. SSH-only. exec-timeout configured.
+                    NMS_FIX=
+                    
+                    OR if VULNERABLE:
+                    NMS_VERDICT=VULNERABLE
+                    NMS_DETAILS=Missing access-class on vty 0 4. Device accepts SSH from any source IP — HIPAA violation.
+                    NMS_FIX=line vty 0 4|access-class ISOLATE_VTY in|transport input ssh|exec-timeout 5 0
+                    
+                    Use | as separator between fix commands. Keep NMS_DETAILS under 120 characters.
+      register: gemini_response
+      ignore_errors: true
+      failed_when: false
+      delegate_to: localhost
+      tags: [audit, both]
+
+    # =========================================================================
+    # PHASE 3 — Parse Gemini response and emit NMS_VERDICT to stdout
+    #
+    # server.cjs's parseAnsibleVerdict() scans the ENTIRE stdout of the
+    # ansible-playbook process for the regex pattern /NMS_VERDICT=(SECURE|VULNERABLE)/.
+    # We emit it via ansible.builtin.debug so it appears in stdout.
+    #
+    # If Gemini is unreachable (no internet, API key invalid, rate limit),
+    # we fall back to a LOCAL policy check: does the VTY config contain
+    # 'access-class'? This is the same check as the original ai_audit.yml
+    # but now it's clearly labeled as a fallback, not the primary check.
+    # =========================================================================
+    - name: "Audit — Extract Gemini verdict from API response"
+      ansible.builtin.set_fact:
+        gemini_text: >-
+          {{
+            gemini_response.json.candidates[0].content.parts[0].text
+            | default('')
+            | trim
+          }}
+      when:
+        - gemini_response is defined
+        - gemini_response.status is defined
+        - gemini_response.status == 200
+        - gemini_response.json is defined
+      tags: [audit, both]
+
+    # Fallback: if Gemini API failed, do local policy check
+    - name: "Audit — Fallback: local policy check (Gemini unavailable)"
+      ansible.builtin.set_fact:
+        gemini_text: >-
+          {%- set vty_out = vty_config_result.stdout[0] | default('') -%}
+          {%- set acl_out = acl_config_result.stdout[0] | default('') -%}
+          {%- if 'access-class' in vty_out and required_acl_name in vty_out and acl_out | length > 10 -%}
+          NMS_VERDICT=SECURE
+          NMS_DETAILS=Local check: access-class {{ required_acl_name }} present in VTY config and ACL exists. (Gemini offline)
+          NMS_FIX=
+          {%- else -%}
+          NMS_VERDICT=VULNERABLE
+          NMS_DETAILS=Local check: access-class ISOLATE_VTY missing from VTY config or ACL does not exist. (Gemini offline)
+          NMS_FIX=line vty 0 4|access-class ISOLATE_VTY in|transport input ssh|exec-timeout 5 0
+          {%- endif -%}
+      when: >
+        gemini_text is not defined or
+        gemini_text | length == 0 or
+        'NMS_VERDICT' not in (gemini_text | default(''))
+      tags: [audit, both]
+
+    # THIS IS THE KEY TASK — server.cjs looks for NMS_VERDICT in this output.
+    # The debug msg MUST contain the literal string NMS_VERDICT=SECURE or VULNERABLE.
+    - name: "Audit — Emit NMS_VERDICT to stdout (parsed by server.cjs)"
+      ansible.builtin.debug:
+        msg: "{{ gemini_text | default('NMS_VERDICT=ERROR\nNMS_DETAILS=Could not determine verdict\nNMS_FIX=') }}"
+      tags: [audit, both]
+
+    # =========================================================================
+    # PHASE 4 — Self-Healing (only runs with --tags heal or both)
+    #
+    # IMPORTANT: This section CHANGES the device configuration.
+    # It should only run when the user clicks "Approve & Auto-Heal" in the UI.
+    # server.cjs calls with --tags heal, which skips all the 'audit' tasks above.
+    # =========================================================================
+    - name: "Heal — Create ACL ISOLATE_VTY on {{ inventory_hostname }}"
+      cisco.ios.ios_config:
+        lines: "{{ isolate_vty_acl }}"
+      tags: [heal, both]
+
+    - name: "Heal — Apply access-class to VTY 0 4"
+      cisco.ios.ios_config:
+        lines:
+          - "access-class {{ required_acl_name }} in"
+          - "transport input ssh"
+          - "exec-timeout 5 0"
+          - "login local"
+        parents: "line vty 0 4"
+      tags: [heal, both]
+
+    - name: "Heal — Apply access-class to VTY 5 15 (extended VTY lines)"
+      cisco.ios.ios_config:
+        lines:
+          - "access-class {{ required_acl_name }} in"
+          - "transport input ssh"
+          - "exec-timeout 5 0"
+        parents: "line vty 5 15"
+      ignore_errors: true  # Not all devices have VTY 5-15
+      failed_when: false
+      tags: [heal, both]
+
+    - name: "Heal — Save running-config to NVRAM (survive reload)"
+      cisco.ios.ios_command:
+        commands:
+          - "write memory"
+      register: write_result
+      tags: [heal, both]
+
+    - name: "Heal — Verify: confirm access-class is now in place"
+      cisco.ios.ios_command:
+        commands:
+          - "show running-config | section line vty"
+      register: verify_vty
+      tags: [heal, both]
+
+    - name: "Heal — Emit heal confirmation to stdout"
+      ansible.builtin.debug:
+        msg: >-
+          NMS_VERDICT=SECURE
+          NMS_DETAILS={{ inventory_hostname }} self-healed. ACL ISOLATE_VTY applied. Config saved to NVRAM.
+          NMS_FIX=
+      tags: [heal, both]

@@ -1,0 +1,29 @@
+{
+  "network_devices": [
+{% for host in ansible_play_hosts %}
+    {
+      "device_name": "{{ host }}",
+      
+      "routing_table": {{ hostvars[host]['route_raw']['stdout'][0] | default('') | split('\n') | reject('match', '^\\s*$') | list | to_json }},
+      "arp_table": {{ hostvars[host]['arp_raw']['stdout'][0] | default('') | split('\n') | reject('match', '^\\s*$') | list | to_json }},
+      "mac_table": {{ hostvars[host]['mac_raw']['stdout'][0] | default('') | split('\n') | reject('match', '^\\s*$') | list | to_json }},
+
+      "interfaces": [
+{% if hostvars[host]['ansible_net_interfaces'] is defined %}
+{% set interfaces = hostvars[host]['ansible_net_interfaces'] %}
+{% set loop_length = interfaces | length %}
+{% set current_index = 0 %}
+{% for iface, details in interfaces.items() %}
+{% set current_index = current_index + 1 %}
+        {
+          "name": "{{ iface }}",
+          "status": "{{ details.lineprotocol | default('down') }}",
+          "ip": "{{ details.ipv4[0].address | default('Unassigned') if details.ipv4 is defined and details.ipv4 | length > 0 else 'Unassigned' }}"
+        }{% if current_index < loop_length %},{% endif %}
+{% endfor %}
+{% endif %}
+      ]
+    }{% if not loop.last %},{% endif %}
+{% endfor %}
+  ]
+}

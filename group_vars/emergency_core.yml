@@ -1,0 +1,65 @@
+---
+# الإعدادات المشتركة لفرع الطوارئ
+
+global_configs:
+  - ip routing
+
+vlans:
+  - id: 10
+    name: Reception
+  - id: 20
+    name: CCTV
+  - id: 30
+    name: Labs
+  - id: 40
+    name: Imaging_XRAY
+  - id: 60
+    name: Pharmacy
+  - id: 70
+    name: Nursing_Doctors
+  - id: 80
+    name: IT
+  - id: 90
+    name: Guest
+  - id: 100
+    name: Ambulance
+  - id: 410
+    name: Trauma_ICU
+  - id: 420
+    name: Emergency_Clinics
+  - id: 470
+    name: Trauma_Operation
+  - id: 610
+    name: Patients
+  - id: 888
+    name: Staff_BYOD
+
+ospf_process_id: 1
+ospf_networks:
+  - network: 10.4.0.0
+    wildcard: 0.0.255.255
+    area: 0
+  - network: 10.6.48.0
+    wildcard: 0.0.15.255
+    area: 0
+
+ospf_passive_interfaces:
+  - Vlan10
+  - Vlan20
+  - Vlan30
+  - Vlan40
+  - Vlan60
+  - Vlan70
+  - Vlan80
+  - Vlan90
+  - Vlan100
+  - Vlan410
+  - Vlan420
+  - Vlan470
+  - Vlan610
+  - Vlan888
+
+  # ====================================================
+# --- ACL Definitions (Emergency & Trauma Center) ---
+# ====================================================
+#

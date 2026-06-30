@@ -1,0 +1,145 @@
+---
+# إعدادات الجهاز الأساسية
+device_hostname: OC-MLS1
+
+interfaces:
+  - name: range Ethernet0/0 - 3
+    cmds:
+      - channel-group 1 mode active
+
+  - name: Port-channel 1
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: range Ethernet2/0 - 2
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: Ethernet1/1
+    cmds:
+      - no switchport
+      - ip address 10.3.255.6 255.255.255.252
+      - no shutdown
+
+  # Reception
+  - name: Vlan 10
+    cmds:
+      - ip address 10.3.10.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN10 in
+      - standby 10 ip 10.3.10.254
+      - no shutdown
+  # CCTV
+  - name: Vlan 20
+    cmds:
+      - ip address 10.3.20.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN20 in
+      - standby 20 ip 10.3.20.254
+      - no shutdown
+  # Labs
+  - name: Vlan 30
+    cmds:
+      - ip address 10.3.30.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN30 in
+      - standby 30 ip 10.3.30.254
+      - no shutdown
+  # Imaging & XRAY
+  - name: Vlan 40
+    cmds:
+      - ip address 10.3.40.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN40 in
+      - standby 40 ip 10.3.40.254
+      - no shutdown
+  # Pharmacy 
+  - name: Vlan 60
+    cmds:
+      - ip address 10.3.60.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN60 in
+      - standby 60 ip 10.3.60.254
+      - no shutdown
+  # Nursing & Doctors
+  - name: Vlan 70
+    cmds:
+      - ip address 10.3.64.3 255.255.248.0
+      - ip access-group ISOLATE_VLAN70 in
+      - standby 70 ip 10.3.71.254
+      - no shutdown
+  # IT 
+  - name: Vlan 80
+    cmds:
+      - ip address 10.3.80.3 255.255.255.0
+      # - ip access-group ISOLATE_VLAN80 in
+      - standby 80 ip 10.3.80.254
+      - no shutdown
+
+  # GUESTS
+  - name: Vlan 90
+    cmds:
+      - ip address 10.3.88.3 255.255.248.0
+      - ip access-group ISOLATE_VLAN90 in
+      - standby 90 ip 10.3.95.254
+      - no shutdown
+
+  # Ambulance 
+  - name: Vlan 100
+    cmds:
+      - ip address 10.3.100.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN100 in
+      - standby 100 ip 10.3.100.254
+      - no shutdown
+
+  # Oncology ICU 
+  - name: Vlan 310
+    cmds:
+      - ip address 10.3.31.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 310 ip 10.3.31.254
+      - no shutdown
+
+  # Oncology  Clinics
+  - name: Vlan 320
+    cmds:
+      - ip address 10.3.32.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 320 ip 10.3.32.254
+      - no shutdown
+
+  # Chemo unit
+  - name: Vlan 330
+    cmds:
+      - ip address 10.3.33.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 330 ip 10.3.33.254
+      - no shutdown
+
+  # oncology 
+  - name: Vlan 370
+    cmds:
+      - ip address 10.3.37.3 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 370 ip 10.3.37.254
+      - no shutdown
+
+  # Patients
+  - name: Vlan 610
+    cmds:
+      - ip address 10.3.61.3 255.255.255.0
+      - ip access-group ISOLATE_VLAN610 in
+      - standby version 2
+      - standby 610 ip 10.3.61.254
+      - no shutdown
+
+  # Staff_BYOD 
+  - name: Vlan 888
+    cmds:
+      - ip address 10.6.32.3 255.255.240.0
+      - ip access-group ISOLATE_VLAN888 in
+      - standby version 2
+      - standby 888 ip 10.6.47.254
+      - no shutdown
+

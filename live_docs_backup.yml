@@ -1,0 +1,600 @@
+---
+# =============================================================================
+# NextGen NMS — Phase 10: Autonomous Enterprise SOC
+# live_docs_backup.yml — Enterprise Live Documentation & Telemetry Collector
+#
+# PHASE 10 CHANGES:
+#   Phase 6 command upgraded from:
+#     "show interfaces | include rate"
+#   to:
+#     "show interfaces | include protocol|rate"
+#
+#   The IOS regex OR filter now captures TWO categories of lines:
+#     1. Interface header:  "GigabitEthernet0/0 is up, line protocol is up"
+#        (captured because it contains "protocol")
+#     2. Traffic rate:      "   5 minute input rate 1048576 bits/sec, ..."
+#        (captured because it contains "rate")
+#
+#   This produces a structured multi-line block per interface, which React's
+#   parseInterfaceTraffic(node, portName) function parses to extract per-port
+#   Rx/Tx rates for the PILLAR 5 Link Diagnostic Modal and PILLAR 6 Sparklines.
+#
+#   WITHOUT the "protocol" keyword, traffic_raw contains only rate lines with
+#   no interface name context — making per-port lookup impossible. The old
+#   aggregate-sum approach still works but cannot attribute rates to specific
+#   interfaces. This fix enables both aggregate AND per-port display.
+#
+# COLLECTION PHASES:
+#   Phase 1 — ios_facts              → interfaces[] (name, status, IP)
+#   Phase 2 — show ip route          → routing_table[] (structured JSON)
+#   Phase 3 — show ip arp            → arp_table[] (structured JSON)
+#   Phase 4 — show mac address-table → mac_table[] (structured JSON)
+#   Phase 5 — Hardware Telemetry     → real_telemetry{cpu,ram,trunks,temp}
+#   Phase 6 — Interface Traffic      → real_telemetry.traffic_raw
+#              "show interfaces | include protocol|rate"
+#              Parsed by parseInterfaceTraffic() for per-port rates
+#              AND parseRealTraffic() for device-level aggregate
+#   Phase 7 — Render full_topology.json from master_topology.j2
+#
+# USAGE:
+#   ansible-playbook live_docs_backup.yml
+#       Full collection — all phases, all devices
+#
+#   ansible-playbook live_docs_backup.yml --tags facts,telemetry,render
+#       Standard poll cycle — collects interfaces, CPU/RAM/trunks,
+#       MAC/ARP/routing tables (now fixed), and renders JSON.
+#       Used by the Node.js background poller in server.cjs.
+#
+#   ansible-playbook live_docs_backup.yml --tags cli_tables,render
+#       CLI-only refresh — skips CPU/RAM/traffic. Useful for refreshing
+#       MAC/ARP/routing tables after a topology change without a full poll.
+#
+#   ansible-playbook live_docs_backup.yml --tags traffic,render
+#       Traffic + render only — fastest cycle for sparkline refresh.
+#
+#   ansible-playbook live_docs_backup.yml --limit OC-MLS0
+#       Single device full collection
+#
+#   ansible-playbook live_docs_backup.yml --limit "OC-MLS0,ET-MLS1"
+#       Multi-device targeted collection
+#
+# TAG TAXONOMY (Issue 1 fix — all CLI table phases now carry multiple tags):
+#   always      → Pre-flight directory creation (runs unconditionally)
+#   facts       → Phase 1 ios_facts + Phase 2/3/4 CLI tables
+#   routes      → Phase 2 routing table only (dedicated alias)
+#   arp         → Phase 3 ARP table only (dedicated alias)
+#   mac         → Phase 4 MAC table only (dedicated alias)
+#   telemetry   → Phase 5 CPU/RAM/trunks/temp + Phase 6 traffic + Phase 2/3/4
+#   cli_tables  → Phase 2/3/4 together (MAC + ARP + routing as a unit)
+#   traffic     → Phase 6 traffic rates only
+#   render      → Phase 7 JSON render (also triggers Phase 2/3/4 collect+parse
+#                 so the Jinja2 template always has variables defined)
+#
+# EVE-NG TOPOLOGY CONFIRMED (from topology image):
+#   OC-Router (Oncology_Center):
+#     e0/0 → ET-Router (MAN Link — inter-building fiber)
+#     e1/0 → OC-MLS0
+#     e1/1 → OC-MLS1
+#   OC-MLS0 ↔ OC-MLS1: Port-Channel Po1 (e0/0, e0/1, e0/2, e0/3 — 4 members)
+#   OC-MLS0: e2/0→OC-Floor3, e2/1→OC-Floor2, e2/2→OC-Floor1
+#   OC-MLS1: e2/0→OC-Floor3, e2/1→OC-Floor2, e2/2→OC-Floor1
+#   OC-Floor1: e0/0 → Ansible-Server
+#   ET-Firewall: port2 → ET-Router (e0/1)
+#   ET-Router (Emergency_and_Trauma):
+#     e0/0 → OC-Router (MAN Link)
+#     e0/1 → ET-Firewall (port2)
+#     e1/0 → ET-MLS0
+#     e1/1 → ET-MLS1
+#   ET-MLS0 ↔ ET-MLS1: Port-Channel Po1 (e0/0, e0/1, e0/2, e0/3 — 4 members)
+#   ET-MLS0: e2/0→ET-Floor3, e2/1→ET-Floor2, e2/2→ET-Floor1
+#   ET-MLS1: e2/0→ET-Floor3, e2/1→ET-Floor2, e2/2→ET-Floor1
+#   ET-Floor1: e0/1→EC01, e0/2→Labs01, e0/3→Rec01
+#   ET-Floor2: e0/1→EC02, e0/2→Labs02, e0/3→Rec02
+#   ET-Floor3: e0/1→EC03, e0/2→Labs03, e0/3→Rec03
+# =============================================================================
+
+- name: "Phase 10 — Enterprise NMS Data Collector & Digital Twin Builder"
+  hosts: cisco_devices
+  gather_facts: false
+  connection: network_cli
+
+  vars:
+    ansible_network_os: cisco.ios.ios
+    ansible_command_timeout: 60
+    output_path: "./hospital-dashboard/public/full_topology.json"
+    collection_timestamp: "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}"
+
+  tasks:
+
+    # =========================================================================
+    # PRE-FLIGHT — Directory creation (run_once, non-blocking)
+    # =========================================================================
+    - name: "Pre-flight — Create output directory if absent"
+      ansible.builtin.file:
+        path: "{{ output_path | dirname }}"
+        state: directory
+        mode: '0755'
+      run_once: true
+      delegate_to: localhost
+      tags: [always]
+
+    # =========================================================================
+    # PHASE 1 — IOS Interface Facts (ios_facts module)
+    #
+    # ansible_net_interfaces is a dict keyed by interface name.
+    # master_topology.j2 iterates this to build the interfaces[] array.
+    # =========================================================================
+    - name: "Phase 1 — Gather IOS Interface Facts"
+      tags: [facts, always]
+      block:
+        - name: "Collect interface inventory via cisco.ios.ios_facts"
+          cisco.ios.ios_facts:
+            gather_subset:
+              - interfaces
+          register: ios_facts_result
+
+        - name: "Validate — at least one interface returned"
+          ansible.builtin.assert:
+            that:
+              - ansible_net_interfaces is defined
+              - ansible_net_interfaces | length > 0
+            fail_msg: "WARN: {{ inventory_hostname }} returned zero interfaces."
+            quiet: true
+
+        # ── SUCCESS PATH: device is reachable via SSH ─────────────────────────
+        # This set_fact fires only when ios_facts completes without a timeout.
+        # The Jinja2 template reads device_reachable from hostvars to decide
+        # whether to write "reachable: true" or "reachable: false" in the JSON.
+        - name: "Mark device as ONLINE — SSH reachable"
+          ansible.builtin.set_fact:
+            device_reachable: true
+            device_status: "online"
+
+      rescue:
+        # ── RESCUE PATH: SSH timed out or connection refused ──────────────────
+        # The critical addition vs. old code: we now EXPLICITLY declare that this
+        # device is offline. Previously the rescue only set ansible_net_interfaces: {}
+        # to prevent a crash — but never told the Jinja2 template "this node is DOWN."
+        # The template then faithfully emitted stale/empty data with no offline flag,
+        # and React had no way to know the device was unreachable.
+        - name: "Rescue — Mark OFFLINE + set empty interface map"
+          ansible.builtin.set_fact:
+            ansible_net_interfaces: {}
+            device_reachable: false
+            device_status: "offline"
+          changed_when: false
+
+        - name: "Log — interface fact failure (device unreachable)"
+          ansible.builtin.debug:
+            msg: >-
+              ⚠️  [OFFLINE] {{ inventory_hostname }}: ios_facts timed out or
+              connection refused. Phases 2–6 will be skipped for this device.
+              JSON will carry reachable:false so the dashboard marks it OFFLINE.
+
+    # =========================================================================
+    # PHASE 2 — IP Routing Table
+    #
+    # TAG FIX (Issue 1): was [routes] only — completely skipped on
+    # --tags facts,telemetry,render and --tags telemetry,render runs.
+    # Adding 'facts', 'telemetry', 'cli_tables', and 'render' ensures:
+    #   • Full runs        (--tags facts)           → routing collected
+    #   • Telemetry cycles (--tags telemetry,render) → routing collected
+    #   • Render-only      (--tags render)           → routing collected
+    #   • CLI-only cycles  (--tags cli_tables)       → routing collected
+    # The 'render' tag on both collect AND parse tasks is critical: if only
+    # the collect task carries 'render', the parse (set_fact) is skipped,
+    # so the Jinja2 template sees an undefined variable and renders [].
+    # =========================================================================
+    - name: "Phase 2 — Collect and Parse Routing Table"
+      tags: [facts, routes, telemetry, cli_tables, render]
+      when: device_reachable | default(true)  # Skip entirely if SSH timed out in Phase 1
+      block:
+        - name: "Execute 'show ip route' on {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - show ip route
+            retries: 2
+            interval: 5
+          register: raw_routes
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Parse routing table — via routes (OSPF, Static, BGP, EIGRP)"
+          ansible.builtin.set_fact:
+            routing_via_raw: >-
+              {{
+                (raw_routes.stdout[0] | default(''))
+                | regex_findall(
+                    '^\s*([A-Z][A-Z*]*)\s+(\d+\.\d+\.\d+\.\d+)(/\d+)?\s+(?:\[\d+/\d+\]\s+)?via\s+(\d+\.\d+\.\d+\.\d+)(?:,\s+\S+,\s+(\S+))?',
+                    multiline=True
+                  )
+                | default([])
+              }}
+          when:
+            - raw_routes.stdout is defined
+            - raw_routes.stdout | length > 0
+            - raw_routes.stdout[0] | length > 0
+
+        - name: "Parse routing table — connected and local routes (C / L)"
+          ansible.builtin.set_fact:
+            routing_connected_raw: >-
+              {{
+                (raw_routes.stdout[0] | default(''))
+                | regex_findall(
+                    '^\s*([CL])\s+(\d+\.\d+\.\d+\.\d+)/(\d+)\s+is directly connected,\s+(\S+)',
+                    multiline=True
+                  )
+                | default([])
+              }}
+          when:
+            - raw_routes.stdout is defined
+            - raw_routes.stdout | length > 0
+            - raw_routes.stdout[0] | length > 0
+
+        - name: "Structure routing table — merge via + connected into list of dicts"
+          ansible.builtin.set_fact:
+            parsed_routing_table: >-
+              [
+              {% for e in (routing_via_raw | default([])) %}
+                {
+                  "protocol":  "{{ e[0] | default('?') | replace('"', '\\"') }}",
+                  "network":   "{{ e[1] | default('0.0.0.0') }}",
+                  "mask":      "{{ e[2] | default('/0') }}",
+                  "next_hop":  "{{ e[3] | default('direct') }}",
+                  "interface": "{{ e[4] | default('N/A') | replace('"', '\\"') }}"
+                }{% if not loop.last or (routing_connected_raw | default([]) | length > 0) %},{% endif %}
+              {% endfor %}
+              {% for e in (routing_connected_raw | default([])) %}
+                {
+                  "protocol":  "{{ e[0] | default('C') }}",
+                  "network":   "{{ e[1] | default('0.0.0.0') }}",
+                  "mask":      "/{{ e[2] | default('0') }}",
+                  "next_hop":  "directly connected",
+                  "interface": "{{ e[3] | default('N/A') | replace('"', '\\"') }}"
+                }{% if not loop.last %},{% endif %}
+              {% endfor %}
+              ]
+
+      rescue:
+        - name: "Rescue — empty routing table"
+          ansible.builtin.set_fact:
+            parsed_routing_table: []
+          changed_when: false
+
+        - name: "Log — routing table failure"
+          ansible.builtin.debug:
+            msg: "⚠️ {{ inventory_hostname }}: show ip route failed."
+
+    # =========================================================================
+    # PHASE 3 — ARP Table
+    #
+    # TAG FIX (Issue 1): was [arp] only — same skip problem as Phase 2.
+    # Now included in every meaningful tag combination so ARP data is
+    # always available when the render step runs.
+    # =========================================================================
+    - name: "Phase 3 — Collect and Parse ARP Table"
+      tags: [facts, arp, telemetry, cli_tables, render]
+      when: device_reachable | default(true)  # Skip if device is offline
+      block:
+        - name: "Execute 'show ip arp' on {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - show ip arp
+          register: raw_arp
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Parse ARP table entries via regex"
+          ansible.builtin.set_fact:
+            arp_table_raw: >-
+              {{
+                (raw_arp.stdout[0] | default(''))
+                | regex_findall(
+                    '(Internet)\s+(\d+\.\d+\.\d+\.\d+)\s+(\d+|-)\s+([\da-fA-F]{4}\.[\da-fA-F]{4}\.[\da-fA-F]{4}|Incomplete)\s+(\S+)\s+(\S+)'
+                  )
+                | default([])
+              }}
+          when:
+            - raw_arp.stdout is defined
+            - raw_arp.stdout | length > 0
+
+        - name: "Structure ARP table as list of dicts"
+          ansible.builtin.set_fact:
+            parsed_arp_table: >-
+              [
+              {% for e in (arp_table_raw | default([])) %}
+                {
+                  "protocol":  "{{ e[0] | default('Internet') }}",
+                  "ip":        "{{ e[1] | default('0.0.0.0') }}",
+                  "age":       "{{ e[2] | default('-') }}",
+                  "mac":       "{{ e[3] | default('Incomplete') }}",
+                  "type":      "{{ e[4] | default('ARPA') }}",
+                  "interface": "{{ e[5] | default('N/A') | replace('"', '\\"') }}"
+                }{% if not loop.last %},{% endif %}
+              {% endfor %}
+              ]
+
+      rescue:
+        - name: "Rescue — empty ARP table"
+          ansible.builtin.set_fact:
+            parsed_arp_table: []
+          changed_when: false
+
+        - name: "Log — ARP table failure"
+          ansible.builtin.debug:
+            msg: "⚠️ {{ inventory_hostname }}: show ip arp failed."
+
+    # =========================================================================
+    # PHASE 4 — MAC Address Table
+    #
+    # TAG FIX (Issue 1): was [mac] only — same skip problem as Phases 2 & 3.
+    # MAC table data is also used by App.jsx for the L2 endpoint visibility
+    # check (the "no MAC = ghost port" logic), so it must be present on
+    # every telemetry cycle, not just explicit --tags mac runs.
+    # =========================================================================
+    - name: "Phase 4 — Collect and Parse MAC Address Table"
+      tags: [facts, mac, telemetry, cli_tables, render]
+      when: device_reachable | default(true)  # Skip if device is offline
+      block:
+        - name: "Execute 'show mac address-table' on {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - show mac address-table
+          register: raw_mac
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Parse MAC address table entries via regex"
+          ansible.builtin.set_fact:
+            mac_table_raw: >-
+              {{
+                (raw_mac.stdout[0] | default(''))
+                | regex_findall(
+                    '(\d+)\s+([\da-fA-F]{4}\.[\da-fA-F]{4}\.[\da-fA-F]{4})\s+(\S+)\s+(\S+)'
+                  )
+                | default([])
+              }}
+          when:
+            - raw_mac.stdout is defined
+            - raw_mac.stdout | length > 0
+
+        - name: "Structure MAC table as list of dicts"
+          ansible.builtin.set_fact:
+            parsed_mac_table: >-
+              [
+              {% for e in (mac_table_raw | default([])) %}
+                {
+                  "vlan":  "{{ e[0] | default('1') }}",
+                  "mac":   "{{ e[1] | default('0000.0000.0000') }}",
+                  "type":  "{{ e[2] | default('DYNAMIC') }}",
+                  "ports": "{{ e[3] | default('N/A') | replace('"', '\\"') }}"
+                }{% if not loop.last %},{% endif %}
+              {% endfor %}
+              ]
+
+      rescue:
+        - name: "Rescue — empty MAC table"
+          ansible.builtin.set_fact:
+            parsed_mac_table: []
+          changed_when: false
+
+        - name: "Log — MAC table failure"
+          ansible.builtin.debug:
+            msg: "⚠️ {{ inventory_hostname }}: show mac address-table failed."
+
+    # =========================================================================
+    # PHASE 5 — Real-Time Hardware Telemetry (CPU / RAM / Trunks / Temp)
+    #
+    # cpu_raw   → parseRealCPU() in App.jsx (five minutes: X%)
+    # ram_raw   → parseRealRAM() in App.jsx (Total: X Used: Y Free: Z)
+    # trunks_raw → isTrunkLink() in App.jsx (normalizeIfaceName() matching)
+    # temp_raw  → displayed in sensor badge (raw string)
+    # traffic_raw → populated in Phase 6 (protocol|rate output)
+    # =========================================================================
+    - name: "Phase 5 — Collect Real-Time Hardware Telemetry"
+      tags: [telemetry]
+      when: device_reachable | default(true)  # Skip if device is offline
+      block:
+        - name: "Pull CPU utilization from {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - "show processes cpu | include utilization"
+          register: telemetry_cpu
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Pull memory pool stats from {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - "show processes memory | include Processor"
+          register: telemetry_ram
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Pull trunk interface list from {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              # Full 'show interfaces trunk' output so we can capture interface
+              # names in their FULL canonical form (e.g. "GigabitEthernet0/0")
+              # for later normalization via normalizeIfaceName() in App.jsx.
+              - "show interfaces trunk"
+          register: telemetry_trunks
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Pull environment temperature from {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              - "show environment temperature"
+          register: telemetry_temp
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Assemble real_telemetry fact (Phase 5 — traffic_raw reserved for Phase 6)"
+          ansible.builtin.set_fact:
+            device_real_telemetry:
+              cpu_raw:    "{{ (telemetry_cpu.stdout[0]    | default('')) | trim }}"
+              ram_raw:    "{{ (telemetry_ram.stdout[0]    | default('')) | trim }}"
+              trunks_raw: >-
+                {{
+                  (telemetry_trunks.stdout[0] | default(''))
+                  | split('\n')
+                  | reject('match', '^\s*$')
+                  | list
+                }}
+              temp_raw:    "{{ (telemetry_temp.stdout[0] | default('N/A')) | trim | truncate(64, True, '') }}"
+              traffic_raw: ""  # Populated in Phase 6
+
+      rescue:
+        - name: "Rescue — empty telemetry block"
+          ansible.builtin.set_fact:
+            device_real_telemetry:
+              cpu_raw:     ""
+              ram_raw:     ""
+              trunks_raw:  []
+              temp_raw:    "N/A"
+              traffic_raw: ""
+          changed_when: false
+
+        - name: "Log — telemetry failure"
+          ansible.builtin.debug:
+            msg: >-
+              ⚠️ {{ inventory_hostname }}: Phase 5 telemetry failed.
+              React will show 'No data — run live_docs_backup.yml' in Sparklines.
+
+    # =========================================================================
+    # PHASE 6 — Real Per-Interface Traffic Rates (PILLAR 6 & PILLAR 5)
+    #
+    # COMMAND: "show interfaces | include protocol|rate"
+    #
+    # The IOS pipe filter '| include protocol|rate' is a regex OR. It captures:
+    #
+    #   Line A (matches 'protocol'):
+    #     GigabitEthernet0/0 is up, line protocol is up
+    #
+    #   Line B (matches 'rate'):
+    #       5 minute input rate 1048576 bits/sec, 800 packets/sec
+    #
+    #   Line C (matches 'rate'):
+    #       5 minute output rate 524288 bits/sec, 400 packets/sec
+    #
+    # This produces a structured block per interface in traffic_raw. React's
+    # parseInterfaceTraffic(node, portName) scans for Line A to identify the
+    # current interface context, then reads Lines B/C for Rx/Tx rates.
+    #
+    # CONSUMERS IN APP.JSX:
+    #   parseInterfaceTraffic(node, 'e0/0') → per-port rates for link modal
+    #   parseRealTraffic(traffic_raw)       → aggregate device Rx/Tx for sparklines
+    #
+    # WHY NOT JUST 'show interfaces' (full output)?
+    #   On a 24-port switch this is ~1800 lines. Storing that in JSON per device
+    #   inflates full_topology.json by 50–200 KB. The 'include protocol|rate'
+    #   filter produces 3 lines per interface (header + input + output) = ~72
+    #   lines per 24-port device — a 25× reduction with full per-port fidelity.
+    #
+    # WHY NOT 'show interfaces summary'?
+    #   The 'summary' subcommand does not include 5-minute rate statistics on
+    #   all IOS versions. The 'include protocol|rate' approach is universally
+    #   supported on IOS 12.4+ and IOS-XE.
+    #
+    # EVE-NG NOTE:
+    #   EVE-NG uses simulated links that carry real frames. If your VPCs are
+    #   generating traffic (e.g., continuous pings), you WILL see non-zero rates.
+    #   On an idle lab, expect near-zero rates — that is correct behavior.
+    # =========================================================================
+    - name: "Phase 6 — Collect Per-Interface Traffic Rates"
+      tags: [traffic, telemetry]
+      when: device_reachable | default(true)  # Skip if device is offline
+      block:
+
+        - name: "Execute 'show interfaces | include protocol|rate' on {{ inventory_hostname }}"
+          cisco.ios.ios_command:
+            commands:
+              # CRITICAL CHANGE from Phase 9: 'include rate' → 'include protocol|rate'
+              # This enables parseInterfaceTraffic() to attribute rates to specific
+              # interfaces instead of only computing a device-level aggregate sum.
+              - "show interfaces | include protocol|rate"
+            retries: 2
+            interval: 3
+          register: raw_traffic
+          ignore_errors: true
+          failed_when: false
+
+        - name: "Log — Phase 6 raw output sample"
+          ansible.builtin.debug:
+            msg: >-
+              {{ inventory_hostname }} Phase 6 traffic:
+              {{ (raw_traffic.stdout[0] | default('(empty)')) | truncate(200, True, '…') }}
+
+        - name: "Merge traffic_raw into device_real_telemetry"
+          ansible.builtin.set_fact:
+            device_real_telemetry: >-
+              {{
+                device_real_telemetry | combine({
+                  'traffic_raw': (raw_traffic.stdout[0] | default('')) | trim
+                })
+              }}
+          when:
+            - raw_traffic.stdout is defined
+            - raw_traffic.stdout | length > 0
+
+        - name: "Phase 6 — Collection summary"
+          ansible.builtin.debug:
+            msg: >-
+              ✅ {{ inventory_hostname }}: Phase 6 complete.
+              traffic_raw length: {{ (raw_traffic.stdout[0] | default('')) | length }} chars.
+              Per-port rates available for parseInterfaceTraffic() in React.
+
+      rescue:
+        - name: "Rescue — traffic_raw stays as empty string"
+          ansible.builtin.debug:
+            msg: >-
+              ⚠️ {{ inventory_hostname }}: Phase 6 traffic collection failed.
+              React Sparklines will show 'No data — run live_docs_backup.yml'.
+              Link Diagnostic Modal will show 'No data' for per-port rates.
+
+    # =========================================================================
+    # PHASE 7 — Render full_topology.json from Jinja2 Template
+    #
+    # run_once + delegate_to localhost: this task runs exactly once on the
+    # Ansible control node (your Linux server), not on any Cisco device.
+    # It uses hostvars to access every device's collected data, producing
+    # a single JSON file that React loads at startup.
+    #
+    # The JSON validation (python3 -c "import json; json.load(open('%s'))")
+    # prevents a malformed file from replacing a working one. If Jinja2
+    # produces invalid JSON, this task fails and the old file is preserved.
+    # =========================================================================
+    - name: "Phase 7 — Validate data integrity before JSON render"
+      tags: [render]
+      ansible.builtin.assert:
+        that:
+          - ansible_net_interfaces is defined
+        fail_msg: "WARN: {{ inventory_hostname }} has no interface data — partial render."
+        quiet: true
+      ignore_errors: true
+
+    - name: "Phase 7 — Render full_topology.json from master_topology.j2"
+      tags: [render]
+      ansible.builtin.template:
+        src:  roles/cisco_base/templates/master_topology.j2
+        dest: "{{ output_path }}"
+        mode: '0644'
+        # Python JSON parse validates the rendered output BEFORE overwriting
+        # the live file. If JSON is invalid, this line aborts safely.
+        validate: "python3 -c \"import json,sys; json.load(open(sys.argv[1])); print('JSON OK')\" %s"
+      run_once: true
+      delegate_to: localhost
+
+    - name: "Phase 7 — Digital twin rebuild summary"
+      tags: [render]
+      ansible.builtin.debug:
+        msg: >-
+          ✅ Digital Twin rebuilt: {{ ansible_play_hosts | length }} devices.
+          Output: {{ output_path }}
+          Timestamp: {{ collection_timestamp }}
+          Schema: v10.0
+          → Reload the NMS dashboard to see live topology, real metrics,
+            per-port traffic rates in Link Diagnostics, and SVIs in Telemetry tab.
+      run_once: true
+      delegate_to: localhost

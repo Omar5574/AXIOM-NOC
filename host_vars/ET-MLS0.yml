@@ -1,0 +1,173 @@
+---
+device_hostname: ET-MLS0
+
+interfaces:
+  - name: range Ethernet0/0 - 3
+    cmds:
+      - channel-group 1 mode active
+
+  - name: Port-channel 1
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: range Ethernet2/0 - 2
+    cmds:
+      - switchport trunk encapsulation dot1q
+      - switchport mode trunk
+
+  - name: Ethernet1/0
+    cmds:
+      - no switchport
+      - ip address 10.4.255.2 255.255.255.252
+      - no shutdown
+
+  # --- SVIs & HSRP ---
+  - name: Vlan 10
+    cmds:
+      - ip address 10.4.10.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN10 in
+      - standby 10 ip 10.4.10.254
+      - standby 10 priority 110
+      - standby 10 preempt
+      - no shutdown
+
+  - name: Vlan 20
+    cmds:
+      - ip address 10.4.20.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN20 in
+      - standby 20 ip 10.4.20.254
+      - standby 20 priority 110
+      - standby 20 preempt
+      - no shutdown
+
+  - name: Vlan 30
+    cmds:
+      - ip address 10.4.30.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN30 in
+      - standby 30 ip 10.4.30.254
+      - standby 30 priority 110
+      - standby 30 preempt
+      - no shutdown
+
+  - name: Vlan 40
+    cmds:
+      - ip address 10.4.40.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN40 in
+      - standby 40 ip 10.4.40.254
+      - standby 40 priority 110
+      - standby 40 preempt
+      - no shutdown
+
+  - name: Vlan 60
+    cmds:
+      - ip address 10.4.60.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN60 in
+      - standby 60 ip 10.4.60.254
+      - standby 60 priority 110
+      - standby 60 preempt
+      - no shutdown
+
+  - name: Vlan 70
+    cmds:
+      - ip address 10.4.64.2 255.255.248.0
+      - ip access-group ISOLATE_VLAN70 in
+      - standby 70 ip 10.4.71.254
+      - standby 70 priority 110
+      - standby 70 preempt
+      - no shutdown
+
+  - name: Vlan 80
+    cmds:
+      - ip address 10.4.80.2 255.255.255.0
+      # - ip access-group ISOLATE_VLAN80 in
+      - standby 80 ip 10.4.80.254
+      - standby 80 priority 110
+      - standby 80 preempt
+      - no shutdown
+
+  - name: Vlan 90
+    cmds:
+      - ip address 10.4.88.2 255.255.248.0
+      - ip access-group ISOLATE_VLAN90 in
+      - standby 90 ip 10.4.95.254
+      - standby 90 priority 110
+      - standby 90 preempt
+      - no shutdown
+
+  - name: Vlan 100
+    cmds:
+      - ip address 10.4.100.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN100 in
+      - standby 100 ip 10.4.100.254
+      - standby 100 priority 110
+      - standby 100 preempt
+      - no shutdown
+
+  # VLANs > 255 (Requires HSRP Version 2)
+  - name: Vlan 410
+    cmds:
+      - ip address 10.4.41.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 410 ip 10.4.41.254
+      - standby 410 priority 110
+      - standby 410 preempt
+      - no shutdown
+
+  - name: Vlan 420
+    cmds:
+      - ip address 10.4.42.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 420 ip 10.4.42.254
+      - standby 420 priority 110
+      - standby 420 preempt
+      - no shutdown
+
+  - name: Vlan 470
+    cmds:
+      - ip address 10.4.47.2 255.255.255.0
+      - ip access-group ISOLATE_UNIQUE_VLANS in
+      - standby version 2
+      - standby 470 ip 10.4.47.254
+      - standby 470 priority 110
+      - standby 470 preempt
+      - no shutdown
+
+  - name: Vlan 610
+    cmds:
+      - ip address 10.4.61.2 255.255.255.0
+      - ip access-group ISOLATE_VLAN610 in
+      - standby version 2
+      - standby 610 ip 10.4.61.254
+      - standby 610 priority 110
+      - standby 610 preempt
+      - no shutdown
+
+  - name: Vlan 888
+    cmds:
+      - ip address 10.6.48.2 255.255.240.0
+      - ip access-group ISOLATE_VLAN888 in
+      - standby version 2
+      - standby 888 ip 10.6.63.254
+      - standby 888 priority 110
+      - standby 888 preempt
+      - no shutdown
+
+
+# # --- ACL Definitions ---
+#   - name: ip access-list extended ISOLATE_VLAN10
+#     cmds:
+#       # السماح لشبكة VLAN 10 في الطوارئ تكلم VLAN 10 في الأورام
+#       - permit ip 10.4.10.0 0.0.0.255 10.3.10.0 0.0.0.255
+#       # منعها من الوصول لأي شبكة داخلية تانية (10.x.x.x)
+#       - deny ip 10.4.10.0 0.0.0.255 10.0.0.0 0.255.255.255
+#       # السماح بأي ترافيك خارجي زي الإنترنت
+#       - permit ip any any
+
+#   - name: ip access-list extended ISOLATE_VLAN80
+#     cmds:
+#       - permit ip 10.4.80.0 0.0.0.255 10.3.80.0 0.0.0.255
+#       - deny ip 10.4.80.0 0.0.0.255 10.0.0.0 0.255.255.255
+#       - permit ip any any

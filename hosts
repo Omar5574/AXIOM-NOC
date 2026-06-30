@@ -1,0 +1,47 @@
+# Oncology Center
+[oncology_routers]
+OC-Router        ansible_host=10.3.255.1
+
+[oncology_core]
+OC-MLS0          ansible_host=10.3.80.2
+OC-MLS1          ansible_host=10.3.80.3
+
+[oncology_access]
+OC-Floor1        ansible_host=10.3.80.10
+OC-Floor2        ansible_host=10.3.80.11
+OC-Floor3        ansible_host=10.3.80.12
+
+# Emergency Center 
+[emergency_routers]
+ET-Router        ansible_host=10.4.255.1
+
+[emergency_core]
+ET-MLS0          ansible_host=10.4.80.2
+ET-MLS1          ansible_host=10.4.80.3
+
+[emergency_access]
+ET-Floor1        ansible_host=10.4.80.10
+ET-Floor2        ansible_host=10.4.80.11
+ET-Floor3        ansible_host=10.4.80.12
+
+# Main Group (Everything)
+[cisco_devices:children]
+oncology_core
+oncology_access
+emergency_core
+emergency_access
+routers
+
+[routers:children]
+oncology_routers
+emergency_routers
+
+# Global Variables
+[cisco_devices:vars]
+ansible_user=admin
+ansible_password=admin123
+ansible_network_os=cisco.ios.ios
+ansible_connection=network_cli
+; ansible_ssh_common_args='-F ~/.ssh/config'
+ansible_connect_timeout=120
+ansible_command_timeout=120

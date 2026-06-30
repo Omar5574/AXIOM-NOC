@@ -1,0 +1,121 @@
+{#
+  master_topology.j2 — AXIOM-NOC Network Digital Twin
+  =====================================================
+  Schema v11.0 — adds two new fields per device:
+    "reachable": true/false   — false if SSH timed out in Phase 1 rescue
+    "status":   "online"/"offline"
+
+  HOW reachable IS DETERMINED:
+    live_docs_backup.yml Phase 1 (ios_facts) sets device_reachable=true on success
+    and device_reachable=false in its rescue block on SSH timeout.
+    This template reads that hostvars value and emits it literally into the JSON.
+    React then reads it to render OFFLINE nodes (gray) and dead links (dashed red).
+
+  KEY DESIGN RULE — pessimistic defaults:
+    If device_reachable is not defined in hostvars (first run, or partial run),
+    we default to true. This is the "innocent until proven guilty" principle:
+    we only declare a device offline when Ansible has EXPLICITLY witnessed it fail.
+    Silence (no data) is not the same as failure.
+
+  INTERFACE STATUS — what React already uses:
+    Each interface object emitted here has a "status" field derived from
+    ansible_net_interfaces[iface].operstatus. React's filteredLinkDefs already
+    reads this to decide whether to mark a link as down (the isPortExplicitlyDown
+    helper). This template just preserves that field faithfully.
+
+  OFFLINE DEVICE BEHAVIOR:
+    When device_reachable is false, ansible_net_interfaces was set to {} in rescue.
+    So the interfaces loop below emits an empty array []. React's offline-detection
+    logic uses _offline (derived from the new "reachable" field) as the primary
+    signal — the empty interface array is a secondary confirmation.
+#}
+{
+  "_meta": {
+    "generated_by":   "AXIOM-NOC live_docs_backup.yml Phase 11",
+    "generated_at":   "{{ lookup('pipe', 'date -u +%Y-%m-%dT%H:%M:%SZ') }}",
+    "ansible_version": "{{ ansible_version.full | default('unknown') }}",
+    "device_count":   {{ ansible_play_hosts | length }},
+    "schema_version": "11.0",
+    "pillars": [
+      "PILLAR 1: Gemini NOC Chat (server.cjs /api/chat reads this file)",
+      "PILLAR 2: Autonomous SOC (server.cjs emits SOC_ACTION_START/RESULT)",
+      "PILLAR 3: Port-Channel aggregation (App.jsx aggregateLinks())",
+      "PILLAR 4: MAN Link OC-Router<->ET-Router (App.jsx handleLinkClick)",
+      "PILLAR 5: Link diagnostics modal (App.jsx distToSegment hitbox)",
+      "PILLAR 6: Per-port traffic rates (traffic_raw: protocol|rate)",
+      "PILLAR 7: Logical SVIs in Tab 0 (App.jsx filter Vlan|Loopback)",
+      "PILLAR 8: Trunk normalization (App.jsx normalizeIfaceName)",
+      "PILLAR 9: Reachability state (reachable+status → offline node/link rendering)"
+    ]
+  },
+  "network_devices": [
+{% for host in ansible_play_hosts %}
+  {%- set h = hostvars[host] %}
+  {#
+    ── REACHABILITY ───────────────────────────────────────────────────────────
+    device_reachable is set by live_docs_backup.yml:
+      true  → Phase 1 ios_facts succeeded
+      false → Phase 1 rescue fired (SSH timeout or connection refused)
+    We default to true if the variable is absent (e.g. partial run).
+  #}
+  {%- set is_reachable = h.get('device_reachable', true) %}
+  {%- set dev_status   = h.get('device_status', 'online') %}
+
+  {#
+    ── MANAGEMENT IP ──────────────────────────────────────────────────────────
+    ansible_host is the inventory-level SSH target IP, which is the same as
+    the management IP React displays in the Side Panel. hostvars[host].ansible_host
+    is always populated from the hosts inventory file.
+  #}
+  {%- set mgmt_ip = h.get('ansible_host', '') %}
+
+  {#
+    ── INTERFACES ─────────────────────────────────────────────────────────────
+    ansible_net_interfaces is a dict keyed by interface name. When the device is
+    reachable, ios_facts populates it with full detail. When unreachable, the
+    rescue sets it to {} — so this loop emits [] for offline devices, which is
+    the correct representation ("no interfaces known to be up").
+
+    Fields emitted per interface:
+      name   — canonical IOS name e.g. "GigabitEthernet0/0"
+      status — operstatus: "up" or "down" (React uses this in isPortExplicitlyDown)
+      ip     — ipv4.address or "Unassigned"
+      mtu    — integer or 1500 default
+      duplex — "full"/"half"/null
+      speed  — string in kbps or null
+  #}
+    {
+      "device_name":     {{ host | tojson }},
+      "management_ip":   {{ mgmt_ip | tojson }},
+      "reachable":       {{ is_reachable | tojson }},
+      "status":          {{ dev_status | tojson }},
+      "interfaces": [
+{% set ifaces = h.get('ansible_net_interfaces', {}) %}
+{% for iface_name, iface in ifaces.items() %}
+        {
+          "name":   {{ iface_name | tojson }},
+          "status": {{ (iface.get('operstatus') or iface.get('lineprotocol') or 'down') | lower | tojson }},
+          {% set ipv4_list = iface.get('ipv4') | default([], true) %}
+          "ip":     {{ (ipv4_list[0].get('address', 'Unassigned') if ipv4_list | length > 0 else 'Unassigned') | tojson }},
+          "mtu":    {{ iface.get('mtu', 1500) | int }},
+          "duplex": {{ (iface.get('duplex') | default(None)) | tojson }},
+          "speed":  {{ (iface.get('bandwidth') | string if iface.get('bandwidth') else None) | tojson }}
+        }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+      ],
+      "routing_table": {{ h.get('parsed_routing_table', []) | tojson }},
+      "arp_table":     {{ h.get('parsed_arp_table', []) | tojson }},
+      "mac_table":     {{ h.get('parsed_mac_table', []) | tojson }},
+      "real_telemetry": {
+        "cpu_raw":     {{ (h.get('device_real_telemetry', {}).get('cpu_raw', '')) | tojson }},
+        "ram_raw":     {{ (h.get('device_real_telemetry', {}).get('ram_raw', '')) | tojson }},
+        "trunks_raw":  {{ (h.get('device_real_telemetry', {}).get('trunks_raw', [])) | tojson }},
+        "temp_raw":    {{ (h.get('device_real_telemetry', {}).get('temp_raw', 'N/A')) | tojson }},
+        "traffic_raw": {{ (h.get('device_real_telemetry', {}).get('traffic_raw', '')) | tojson }}
+      }
+    }{% if not loop.last %},{% endif %}
+
+{% endfor %}
+  ]
+}

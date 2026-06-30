@@ -1,0 +1,2038 @@
+{
+  "_meta": {
+    "generated_by":   "AXIOM-NOC live_docs_backup.yml Phase 11",
+    "generated_at":   "2026-04-30T11:54:47Z",
+    "ansible_version": "2.20.2",
+    "device_count":   12,
+    "schema_version": "11.0",
+    "pillars": [
+      "PILLAR 1: Gemini NOC Chat (server.cjs /api/chat reads this file)",
+      "PILLAR 2: Autonomous SOC (server.cjs emits SOC_ACTION_START/RESULT)",
+      "PILLAR 3: Port-Channel aggregation (App.jsx aggregateLinks())",
+      "PILLAR 4: MAN Link OC-Router<->ET-Router (App.jsx handleLinkClick)",
+      "PILLAR 5: Link diagnostics modal (App.jsx distToSegment hitbox)",
+      "PILLAR 6: Per-port traffic rates (traffic_raw: protocol|rate)",
+      "PILLAR 7: Logical SVIs in Tab 0 (App.jsx filter Vlan|Loopback)",
+      "PILLAR 8: Trunk normalization (App.jsx normalizeIfaceName)",
+      "PILLAR 9: Reachability state (reachable+status → offline node/link rendering)"
+    ]
+  },
+  "network_devices": [
+  
+  
+      {
+      "device_name":     "OC-MLS0",
+      "management_ip":   "10.3.80.2",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "10.3.255.2",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Port-channel1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "40000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.3.80.2",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.3.255.1\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.80.2\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.255.0\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.255.2\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.2\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.12\",\n    \"age\":       \"7\",\n    \"mac\":       \"aabb.cc81.d000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.80\",\n    \"age\":       \"0\",\n    \"mac\":       \"f205.aec9.43bc\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.100\",\n    \"age\":       \"7\",\n    \"mac\":       \"000c.290f.3ca9\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.1\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc00.7001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.2\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc01.2001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.4000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.4010\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.4020\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.4030\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.d002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.2002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"000c.290f.3ca9\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"0050.56c0.0002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.4000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.d000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.1000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"f205.aec9.43bc\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  272540848 Used:   55050728 Free:  217490120",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\nEt2/2       on               802.1q         trunking      1\nPo1         on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\nEt2/2       1-4094\nPo1         1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,80\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,80\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 269000 bits/sec, 568 packets/sec\n  5 minute output rate 6000 bits/sec, 15 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 2 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 15000 bits/sec, 26 packets/sec\n  5 minute output rate 308000 bits/sec, 576 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nPort-channel1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 7000 bits/sec, 17 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "OC-MLS1",
+      "management_ip":   "10.3.80.3",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "10.3.255.6",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Port-channel1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "40000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.3.80.3",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.3.255.5\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.80.3\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.255.4\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.255.6\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.2\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc81.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.3\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.4000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.11\",\n    \"age\":       \"58\",\n    \"mac\":       \"aabb.cc83.1000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.12\",\n    \"age\":       \"7\",\n    \"mac\":       \"aabb.cc81.d000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.80\",\n    \"age\":       \"162\",\n    \"mac\":       \"f205.aec9.43bc\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.100\",\n    \"age\":       \"2\",\n    \"mac\":       \"000c.290f.3ca9\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.5\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc00.7011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.6\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc01.4011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2010\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2020\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2030\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.1012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.2012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"000c.290f.3ca9\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"0050.56c0.0002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.2010\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.1000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  272540848 Used:   55032976 Free:  217507872",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/1       on               802.1q         trunking      1\nEt2/2       on               802.1q         trunking      1\nPo1         on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/1       1-4094\nEt2/2       1-4094\nPo1         1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 1000 bits/sec, 2 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is administratively down, line protocol is down (disabled) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nPort-channel1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "OC-Floor1",
+      "management_ip":   "10.3.80.10",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.3.80.10",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[    {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.80.10\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.2\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc81.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.10\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc83.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.11\",\n    \"age\":       \"58\",\n    \"mac\":       \"aabb.cc83.1000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.12\",\n    \"age\":       \"7\",\n    \"mac\":       \"aabb.cc81.d000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.80\",\n    \"age\":       \"162\",\n    \"mac\":       \"f205.aec9.43bc\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.100\",\n    \"age\":       \"2\",\n    \"mac\":       \"000c.290f.3ca9\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"000c.290f.3ca9\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et0/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"0050.56c0.0002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et0/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.2022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.2000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.4000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.d000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.1000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"f205.aec9.43bc\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et0/0\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56020584 Free:   82302536",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,80\nEt2/1       1,80\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,80\nEt2/1       none"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 13000 bits/sec, 27 packets/sec\n  5 minute output rate 312000 bits/sec, 628 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 327000 bits/sec, 624 packets/sec\n  5 minute output rate 14000 bits/sec, 27 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "OC-Floor2",
+      "management_ip":   "10.3.80.11",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.3.80.11",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[    {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.80.11\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.2\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc81.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.3\",\n    \"age\":       \"59\",\n    \"mac\":       \"aabb.cc81.4000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.11\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc83.1000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.12\",\n    \"age\":       \"7\",\n    \"mac\":       \"aabb.cc81.d000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.80\",\n    \"age\":       \"162\",\n    \"mac\":       \"f205.aec9.43bc\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.100\",\n    \"age\":       \"2\",\n    \"mac\":       \"000c.290f.3ca9\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.4012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"000c.290f.3ca9\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"0050.56c0.0002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.4012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56698176 Free:   81624944",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,80,420\nEt2/1       1,80,420\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,80,420\nEt2/1       1,80,420"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 1000 bits/sec, 1 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "OC-Floor3",
+      "management_ip":   "10.3.80.12",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.3.80.12",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[    {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.80.12\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.2\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc81.2000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.12\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.d000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.80.100\",\n    \"age\":       \"2\",\n    \"mac\":       \"000c.290f.3ca9\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.2002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"000c.290f.3ca9\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"0050.56c0.0002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.2002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56030800 Free:   82292320",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,30,80\nEt2/1       1,30,80\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,30,80\nEt2/1       1,30,80"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 2 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-MLS0",
+      "management_ip":   "10.4.80.2",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "10.4.255.2",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Port-channel1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "40000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.4.80.2",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.4.255.1\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.80.2\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.255.0\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.255.2\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.2\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.5000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.3\",\n    \"age\":       \"158\",\n    \"mac\":       \"aabb.cc81.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.10\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.11\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.12\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.e000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.1\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc00.8001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.2\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc01.5001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.6000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.6010\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.6020\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.6030\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.e002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.6002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.7002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.e000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.6000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.7000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/1%; one minute: 1%; five minutes: 1%",
+        "ram_raw":     "Processor Pool Total:  272540848 Used:   55254416 Free:  217286432",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\nEt2/2       on               802.1q         trunking      1\nPo1         on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\nEt2/2       1-4094\nPo1         1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,80\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,80\nEt2/1       1,80\nEt2/2       1,80\nPo1         1,80"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1498000 bits/sec, 1869 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1000 bits/sec, 1 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 3000 bits/sec, 8 packets/sec\n  5 minute output rate 54000 bits/sec, 63 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 519000 bits/sec, 658 packets/sec\n  5 minute output rate 992000 bits/sec, 1246 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 512000 bits/sec, 649 packets/sec\n  5 minute output rate 1002000 bits/sec, 1253 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 504000 bits/sec, 637 packets/sec\n  5 minute output rate 1010000 bits/sec, 1259 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nPort-channel1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 1500000 bits/sec, 1874 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 45000 bits/sec, 62 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-MLS1",
+      "management_ip":   "10.4.80.3",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "10.4.255.6",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Port-channel1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "40000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.4.80.3",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.4.255.5\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.80.3\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.255.4\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.255.6\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.2\",\n    \"age\":       \"158\",\n    \"mac\":       \"aabb.cc81.5000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.3\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.10\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.11\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.12\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.e000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.5\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc00.8011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.6\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc01.6011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5010\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5020\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5030\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.e012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.6012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/2\"\n  },  {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc03.7012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.e000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.6000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.7000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Po1\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  272540848 Used:   55217616 Free:  217323232",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\nEt2/2       on               802.1q         trunking      1\nPo1         on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\nEt2/2       1-4094\nPo1         1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,10,30,80,420\nEt2/1       1,10,30,80,420\nEt2/2       1,10,30,80,420\nPo1         1,10,30,80,420\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,10,30,80,420\nEt2/1       1,10,30,80,420\nEt2/2       1,10,30,80,420\nPo1         1,10,30,80,420"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 756000 bits/sec, 956 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 261000 bits/sec, 548 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 3000 bits/sec, 5 packets/sec\n  5 minute output rate 1000 bits/sec, 3 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 3000 bits/sec, 5 packets/sec\n  5 minute output rate 1000 bits/sec, 3 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 3000 bits/sec, 5 packets/sec\n  5 minute output rate 1000 bits/sec, 3 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nPort-channel1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 728000 bits/sec, 957 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 619000 bits/sec, 818 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-Floor1",
+      "management_ip":   "10.4.80.10",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.4.80.10",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.4.80.2\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.80.10\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.2\",\n    \"age\":       \"158\",\n    \"mac\":       \"aabb.cc81.5000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.3\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.10\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc83.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.11\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.12\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.e000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"10\",\n    \"mac\":   \"aabb.cc01.6022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"30\",\n    \"mac\":   \"aabb.cc01.6022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"420\",\n    \"mac\":   \"aabb.cc01.6022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.5022\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.e000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.7000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56243120 Free:   82080000",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       10,20,30,40,60,70,90,100,410,420,470,610,888"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 483000 bits/sec, 632 packets/sec\n  5 minute output rate 502000 bits/sec, 639 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 1000 bits/sec, 3 packets/sec\n  5 minute output rate 3000 bits/sec, 5 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 482000 bits/sec, 630 packets/sec\n  5 minute output rate 8000 bits/sec, 11 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-Floor2",
+      "management_ip":   "10.4.80.11",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.4.80.11",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.4.80.2\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.80.11\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.2\",\n    \"age\":       \"158\",\n    \"mac\":       \"aabb.cc81.5000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.3\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.10\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.11\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc83.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.12\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.e000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"10\",\n    \"mac\":   \"aabb.cc01.6012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"30\",\n    \"mac\":   \"aabb.cc01.6012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"420\",\n    \"mac\":   \"aabb.cc01.6012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.5012\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.e000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.6000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56224136 Free:   82098984",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       10,20,30,40,60,70,90,100,410,420,470,610,888"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 488000 bits/sec, 641 packets/sec\n  5 minute output rate 513000 bits/sec, 646 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 1000 bits/sec, 3 packets/sec\n  5 minute output rate 2000 bits/sec, 4 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 487000 bits/sec, 640 packets/sec\n  5 minute output rate 5000 bits/sec, 10 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-Floor3",
+      "management_ip":   "10.4.80.12",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet2/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet3/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet4/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/0",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/1",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/2",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet5/3",
+          "status": "up",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Vlan80",
+          "status": "up",
+                    "ip":     "10.4.80.12",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "1000000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S*\",\n    \"network\":   \"0.0.0.0\",\n    \"mask\":      \"/0\",\n    \"next_hop\":  \"10.4.80.2\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.80.12\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.2\",\n    \"age\":       \"158\",\n    \"mac\":       \"aabb.cc81.5000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.3\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc81.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.10\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.6000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.11\",\n    \"age\":       \"153\",\n    \"mac\":       \"aabb.cc83.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.80.12\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc81.e000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Vlan80\"\n  } ]",
+      "mac_table":     "[   {\n    \"vlan\":  \"1\",\n    \"mac\":   \"aabb.cc01.5002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"10\",\n    \"mac\":   \"aabb.cc01.6002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"30\",\n    \"mac\":   \"aabb.cc01.6002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"420\",\n    \"mac\":   \"aabb.cc01.6002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/1\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc01.5002\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc81.5000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.6000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  },  {\n    \"vlan\":  \"80\",\n    \"mac\":   \"aabb.cc83.7000\",\n    \"type\":  \"DYNAMIC\",\n    \"ports\": \"Et2/0\"\n  } ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  138323120 Used:   56256184 Free:   82066936",
+        "trunks_raw":  ["Port        Mode             Encapsulation  Status        Native vlan\nEt2/0       on               802.1q         trunking      1\nEt2/1       on               802.1q         trunking      1\n\nPort        Vlans allowed on trunk\nEt2/0       1-4094\nEt2/1       1-4094\n\nPort        Vlans allowed and active in management domain\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\n\nPort        Vlans in spanning tree forwarding state and not pruned\nEt2/0       1,10,20,30,40,60,70,80,90,100,410,420,470,610,888\nEt2/1       10,20,30,40,60,70,90,100,410,420,470,610,888"],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 510000 bits/sec, 659 packets/sec\n  5 minute output rate 539000 bits/sec, 665 packets/sec\n     0 unknown protocol drops\nEthernet2/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 1000 bits/sec, 3 packets/sec\n  5 minute output rate 3000 bits/sec, 5 packets/sec\n     0 unknown protocol drops\nEthernet2/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet2/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet3/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet4/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/0 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/1 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/2 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet5/3 is up, line protocol is up (connected) \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nVlan80 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 510000 bits/sec, 657 packets/sec\n  5 minute output rate 9000 bits/sec, 9 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "OC-Router",
+      "management_ip":   "10.3.255.1",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "10.255.255.13",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "10.3.255.1",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "10.3.255.5",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S\",\n    \"network\":   \"10.3.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"10.3.255.2\",\n    \"interface\": \"\"\n  },  {\n    \"protocol\":  \"S\",\n    \"network\":   \"10.4.0.0\",\n    \"mask\":      \"/16\",\n    \"next_hop\":  \"10.255.255.14\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.255.0\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.255.1\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.3.255.4\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.3.255.5\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.255.255.12\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet0/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.255.255.13\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet0/0\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.1\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.7001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.2\",\n    \"age\":       \"8\",\n    \"mac\":       \"aabb.cc01.2001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.3.255.5\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.7011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.255.255.13\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet0/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.255.255.14\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc00.8000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet0/0\"\n  } ]",
+      "mac_table":     "[  ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  347104396 Used:   71606432 Free:  275497964",
+        "trunks_raw":  [],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 279000 bits/sec, 598 packets/sec\n  5 minute output rate 4000 bits/sec, 10 packets/sec\n     2 unknown protocol drops\nEthernet0/1 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 6000 bits/sec, 13 packets/sec\n  5 minute output rate 285000 bits/sec, 602 packets/sec\n     6 unknown protocol drops\nEthernet1/1 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     1 unknown protocol drops\nEthernet1/2 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    },
+  
+  
+      {
+      "device_name":     "ET-Router",
+      "management_ip":   "10.4.255.1",
+      "reachable":       true,
+      "status":          "online",
+      "interfaces": [
+        {
+          "name":   "Ethernet0/0",
+          "status": "up",
+                    "ip":     "10.255.255.14",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/1",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/2",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet0/3",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/0",
+          "status": "up",
+                    "ip":     "10.4.255.1",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/1",
+          "status": "up",
+                    "ip":     "10.4.255.5",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/2",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        },
+        {
+          "name":   "Ethernet1/3",
+          "status": "administratively down",
+                    "ip":     "Unassigned",
+          "mtu":    1500,
+          "duplex": null,
+          "speed":  "10000"
+        }
+      ],
+      "routing_table": "[   {\n    \"protocol\":  \"S\",\n    \"network\":   \"10.3.0.0\",\n    \"mask\":      \"/16\",\n    \"next_hop\":  \"10.255.255.13\",\n    \"interface\": \"\"\n  },  {\n    \"protocol\":  \"S\",\n    \"network\":   \"10.4.80.0\",\n    \"mask\":      \"/24\",\n    \"next_hop\":  \"10.4.255.2\",\n    \"interface\": \"\"\n  },   {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.255.0\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.255.1\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.4.255.4\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.4.255.5\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"C\",\n    \"network\":   \"10.255.255.12\",\n    \"mask\":      \"/30\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet0/0\"\n  },  {\n    \"protocol\":  \"L\",\n    \"network\":   \"10.255.255.14\",\n    \"mask\":      \"/32\",\n    \"next_hop\":  \"directly connected\",\n    \"interface\": \"Ethernet0/0\"\n  } ]",
+      "arp_table":     "[   {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.1\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.8001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.2\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc01.5001\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.4.255.5\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.8011\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet1/1\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.255.255.13\",\n    \"age\":       \"164\",\n    \"mac\":       \"aabb.cc00.7000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet0/0\"\n  },  {\n    \"protocol\":  \"Internet\",\n    \"ip\":        \"10.255.255.14\",\n    \"age\":       \"-\",\n    \"mac\":       \"aabb.cc00.8000\",\n    \"type\":      \"ARPA\",\n    \"interface\": \"Ethernet0/0\"\n  } ]",
+      "mac_table":     "[  ]",
+      "real_telemetry": {
+        "cpu_raw":     "CPU utilization for five seconds: 0%/0%; one minute: 0%; five minutes: 0%",
+        "ram_raw":     "Processor Pool Total:  347104396 Used:   71617848 Free:  275486548",
+        "trunks_raw":  [],
+        "temp_raw":    "N/A",
+        "traffic_raw": "Ethernet0/0 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 4000 bits/sec, 11 packets/sec\n  5 minute output rate 280000 bits/sec, 598 packets/sec\n     0 unknown protocol drops\nEthernet0/1 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/2 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet0/3 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/0 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 41000 bits/sec, 58 packets/sec\n  5 minute output rate 3000 bits/sec, 9 packets/sec\n     0 unknown protocol drops\nEthernet1/1 is up, line protocol is up \n  Queueing strategy: fifo\n  5 minute input rate 258000 bits/sec, 540 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/2 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops\nEthernet1/3 is administratively down, line protocol is down \n  Queueing strategy: fifo\n  5 minute input rate 0 bits/sec, 0 packets/sec\n  5 minute output rate 0 bits/sec, 0 packets/sec\n     0 unknown protocol drops"
+      }
+    }
+  ]
+}

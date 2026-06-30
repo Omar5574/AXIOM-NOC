@@ -1,0 +1,8 @@
+---
+- name: Next Generation Hospital Network Deployment
+  hosts: cisco_devices
+  gather_facts: false
+
+  roles:
+    - cisco_base
+    # - test_base

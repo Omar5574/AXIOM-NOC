@@ -1,0 +1,28 @@
+---
+device_hostname: OC-Router
+
+interfaces:
+  - name: Ethernet0/0
+    cmds: 
+      - ip address 10.255.255.13 255.255.255.252
+      - no shutdown
+    
+  - name: Ethernet1/0
+    cmds:
+      - ip address 10.3.255.1 255.255.255.252
+      - no shutdown
+      
+
+  - name: Ethernet1/1
+    cmds:
+      - ip address 10.3.255.5 255.255.255.252
+      - no shutdown
+
+ospf_process_id: 1
+ospf_networks:
+  - network: 10.3.0.0
+    wildcard: 0.0.255.255
+    area: 0
+  - network: 10.255.255.12
+    wildcard: 0.0.0.3
+    area: 0

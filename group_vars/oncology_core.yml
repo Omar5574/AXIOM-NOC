@@ -1,0 +1,72 @@
+---
+# الإعدادات المشتركة لكل سويتشات الـ Core في فرع الأورام (OC-MLS0 و OC-MLS1)
+
+# ip routing enable
+global_configs:
+  - ip routing
+
+# Inter-VLAN Routing
+vlans:
+  - id: 10
+    name: Reception
+  - id: 20
+    name: CCTV
+  - id: 30
+    name: Labs
+  - id: 40
+    name: Imaging_XRAY
+  - id: 60
+    name: Pharmacy
+  - id: 70
+    name: Nursing_Doctors
+  - id: 80
+    name: IT
+  - id: 90
+    name: Guest
+  - id: 100
+    name: Ambulance
+  - id: 310
+    name: Oncology_ICU
+  - id: 320
+    name: Oncology_Clinics
+  - id: 330
+    name: Chemo_unit
+  - id: 370
+    name: Oncology
+  - id: 610
+    name: Patients
+  - id: 888
+    name: Staff_BYOD
+
+# 3. إعدادات الـ OSPF المشتركة
+ospf_process_id: 1
+ospf_networks:
+  - network: 10.3.0.0
+    wildcard: 0.0.255.255
+    area: 0
+  - network: 10.6.32.0
+    wildcard: 0.0.15.255
+    area: 0
+
+
+ospf_passive_interfaces:
+  - Vlan10
+  - Vlan20
+  - Vlan30
+  - Vlan40
+  - Vlan60
+  - Vlan70
+  - Vlan80
+  - Vlan90
+  - Vlan100
+  - Vlan310
+  - Vlan320
+  - Vlan330
+  - Vlan370
+  - Vlan610
+  - Vlan888
+
+  # ==========================================
+  # --- ACL Definitions (Oncology Center) ---
+  # ==========================================
+#
